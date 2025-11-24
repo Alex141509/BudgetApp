@@ -24,7 +24,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String message = "";   // <-- text starts empty
+  String message = ""; 
 
   @override
   Widget build(BuildContext context) {
