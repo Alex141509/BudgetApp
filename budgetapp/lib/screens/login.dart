@@ -13,7 +13,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscure = true;
 
   void _login() {
-    Navigator.pushReplacementNamed(context, '/home');
+    Navigator.pushReplacementNamed(context, '/home'); 
   }
 
   @override
