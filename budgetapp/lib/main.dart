@@ -1,57 +1,28 @@
 import 'package:flutter/material.dart';
+import 'screens/login.dart';
+import 'screens/home.dart';
+import 'screens/addPurchase.dart';
+import 'screens/finance.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const BudgetBanditsApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class BudgetBanditsApp extends StatelessWidget {
+  const BudgetBanditsApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  String message = ""; 
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Hello World App"),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              message,
-              style: const TextStyle(fontSize: 32),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  message = "Hello World!";
-                });
-              },
-              child: const Text("Press Me"),
-            )
-          ],
-        ),
-      ),
+      title: 'Budget Bandits',
+      initialRoute: '/login',   // START on login screen
+      routes: {
+        '/login': (context) => const LoginScreen(),
+       // '/home': (context) => const HomeScreen(),
+        // '/addPurchase': (context) => const AddPurchaseScreen(),
+       //  '/finance': (context) => const FinanceScreen(),
+      },
     );
   }
 }
