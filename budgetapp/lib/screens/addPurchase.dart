@@ -1,3 +1,4 @@
+// lib/screens/add_purchase.dart
 import 'package:flutter/material.dart';
 import '../models/budget_model.dart';
 
@@ -20,15 +21,24 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
     super.dispose();
   }
 
-  void _save() {
+  void _onSavePressed() {
     final text = _amountController.text.trim();
     final val = double.tryParse(text);
     if (val == null || val <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Enter a valid positive number')));
       return;
     }
-    budget.addPurchase(_selectedCategory, val);
-    Navigator.pop(context); // return to home
+
+    // Navigate to the full-screen confirmation (Option C)
+    // Pass amount and category as arguments
+    Navigator.pushNamed(
+      context,
+      '/purchaseConfirm',
+      arguments: {
+        'category': _selectedCategory,
+        'amount': val,
+      },
+    );
   }
 
   @override
@@ -47,7 +57,6 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
         child: Column(
           children: [
             const SizedBox(height: 12),
-            // Category picker
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
@@ -67,9 +76,12 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _save,
+              onPressed: _onSavePressed,
               child: const Text('Save'),
-              style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              ),
             ),
           ],
         ),
