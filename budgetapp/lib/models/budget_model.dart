@@ -76,4 +76,8 @@ class BudgetModel {
     final spent = totalBudget.value - remaining.value;
     return (spent / totalBudget.value).clamp(0.0, 1.0);
   }
+
+
+
 }
+
