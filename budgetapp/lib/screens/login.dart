@@ -8,177 +8,92 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _userController = TextEditingController();
-  final TextEditingController _passController = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _pass = TextEditingController();
   bool _obscure = true;
 
   void _login() {
-    Navigator.pushReplacementNamed(context, '/home'); 
+    // Accept any email/password — no DB required
+    // Simply navigate to home
+    Navigator.pushReplacementNamed(context, '/home');
+  }
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _pass.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // simple clean UI consistent with your mock
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Background image
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/budget_bandits_bg.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-
-          // Semi-transparent overlay
-          Container(
-            color: Colors.black.withOpacity(0.35),
-          ),
-
+          // background color / image: use a simple color for now
+          Container(color: const Color(0xFFBBDDFF)),
           SafeArea(
             child: Column(
               children: [
-                // BLUE TOP BAR
                 Container(
-                  height: 56,
-                  width: double.infinity,
-                  color: const Color(0xFF0066FF),
+                  height: 64,
+                  color: const Color(0xFFE6F0FF),
                   alignment: Alignment.center,
-                  child: const Text(
-                    "Budget Bandits",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: const Text('Budget Bandits', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 ),
-
-                const SizedBox(height: 80),
-
-                // FORM
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      children: [
-                        _buildTextField(
-                          controller: _userController,
-                          label: "Username",
-                          icon: Icons.person,
-                          obscure: false,
+                const SizedBox(height: 40),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: _email,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          prefixIcon: const Icon(Icons.email),
+                          filled: true,
+                          fillColor: Colors.white.withOpacity(0.9),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                         ),
-                        const SizedBox(height: 16),
-                        _buildTextField(
-                          controller: _passController,
-                          label: "Password",
-                          icon: Icons.lock,
-                          obscure: _obscure,
-                          onToggleObscure: () {
-                            setState(() => _obscure = !_obscure);
-                          },
-                        ),
-                        const SizedBox(height: 8),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextButton(
-                              onPressed: () {},
-                              child: const Text(
-                                "Forgot Password",
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  decoration: TextDecoration.underline,
-                                ),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {},
-                              child: const Text(
-                                "New User",
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  decoration: TextDecoration.underline,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 16),
-
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: _login,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF0066FF),
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                            ),
-                            child: const Text(
-                              "Login",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _pass,
+                        obscureText: _obscure,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          prefixIcon: const Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                            icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility),
+                            onPressed: () => setState(() => _obscure = !_obscure),
                           ),
+                          filled: true,
+                          fillColor: Colors.white.withOpacity(0.9),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _login,
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                          ),
+                          child: const Text('Log in'),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  // Text field builder
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    required bool obscure,
-    VoidCallback? onToggleObscure,
-  }) {
-    return TextField(
-      controller: controller,
-      obscureText: obscure,
-      style: const TextStyle(color: Colors.white),
-      cursorColor: Colors.white,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.black.withOpacity(0.5),
-        labelText: label,
-        labelStyle: const TextStyle(color: Colors.white70),
-        prefixIcon: Icon(icon, color: Colors.white70),
-        suffixIcon: onToggleObscure != null
-            ? IconButton(
-                icon: Icon(
-                  obscure ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.white70,
-                ),
-                onPressed: onToggleObscure,
-              )
-            : null,
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.white54),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.white),
-          borderRadius: BorderRadius.circular(6),
-        ),
       ),
     );
   }

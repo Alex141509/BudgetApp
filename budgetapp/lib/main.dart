@@ -14,15 +14,19 @@ class BudgetBanditsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'Budget Bandits',
-      initialRoute: '/login',   // START on login screen
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/login',
       routes: {
         '/login': (context) => const LoginScreen(),
-       // '/home': (context) => const HomeScreen(),
-        // '/addPurchase': (context) => const AddPurchaseScreen(),
-       //  '/finance': (context) => const FinanceScreen(),
+       '/home': (context) => const HomeScreen(),
+       '/addPurchase': (context) => const AddPurchaseScreen(),
+        '/finance': (context) => const FinanceScreen(),
       },
+      theme: ThemeData(
+        primaryColor: const Color(0xFF2B7CEB),
+        useMaterial3: false,
+      ),
     );
   }
 }
