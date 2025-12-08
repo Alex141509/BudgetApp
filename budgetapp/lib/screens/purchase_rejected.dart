@@ -1,5 +1,6 @@
 // lib/screens/purchase_rejected.dart
 import 'dart:async';
+
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import '../models/budget_model.dart';
@@ -24,7 +25,6 @@ class _PurchaseRejectedScreenState extends State<PurchaseRejectedScreen> {
 
     // After 2 seconds, navigate to Home
     Timer(const Duration(seconds: 2), () {
-      // replace stack and go to home
       Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
     });
   }
@@ -37,7 +37,6 @@ class _PurchaseRejectedScreenState extends State<PurchaseRejectedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final rem = budget.remaining.value;
     return Scaffold(
       backgroundColor: const Color(0xFFDFFFD8), // green-ish
       appBar: AppBar(
@@ -54,39 +53,43 @@ class _PurchaseRejectedScreenState extends State<PurchaseRejectedScreen> {
               alignment: Alignment.topCenter,
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 36.0, horizontal: 20),
-                child: Column(
-                  children: [
-                    const Text('🎉 Congrats!', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 8),
-                    const Text("You saved money — keep trying to reach your goals!", textAlign: TextAlign.center),
-                    const SizedBox(height: 18),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
-                      child: Column(
-                        children: [
-                          const Text('Current Balance', style: TextStyle(fontSize: 14)),
-                          const SizedBox(height: 6),
-                          Text('\$${rem.toStringAsFixed(2)}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 18),
-                    // small summary bar chart (reuses category totals)
-                    Container(
-                      height: 180,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(color: Colors.white70, borderRadius: BorderRadius.circular(8)),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text('Good job — returning to Home...'),
-                          ],
+                child: ValueListenableBuilder<double>(
+                  valueListenable: budget.savings,
+                  builder: (context, saved, _) {
+                    return Column(
+                      children: [
+                        const Text('🎉 Congrats!', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 8),
+                        const Text("You saved money — keep trying to reach your goals!", textAlign: TextAlign.center),
+                        const SizedBox(height: 18),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+                          child: Column(
+                            children: [
+                              const Text('Savings', style: TextStyle(fontSize: 14)),
+                              const SizedBox(height: 6),
+                              Text('\$${saved.toStringAsFixed(2)}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
-                  ],
+                        const SizedBox(height: 18),
+                        Container(
+                          height: 180,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(color: Colors.white70, borderRadius: BorderRadius.circular(8)),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text('Good job — returning to Home...'),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),

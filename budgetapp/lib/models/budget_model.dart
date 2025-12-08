@@ -35,6 +35,12 @@ class BudgetModel {
   final ValueNotifier<Map<String, double>> categoryTotals =
       ValueNotifier<Map<String, double>>({});
 
+  // savings shown on Home (start at 0 now)
+  final ValueNotifier<double> savings = ValueNotifier<double>(0.0);
+
+  // total amount user "rejected" (we'll add rejected amounts into savings)
+  final ValueNotifier<double> rejectedSavings = ValueNotifier<double>(0.0);
+
   void setBudget(double amount) {
     totalBudget.value = amount;
     remaining.value = amount - _sumPurchases();
@@ -46,6 +52,9 @@ class BudgetModel {
     remaining.value = 0.0;
     purchases.value = [];
     categoryTotals.value = {};
+    // clear savings on reset so fresh start = 0
+    savings.value = 0.0;
+    rejectedSavings.value = 0.0;
   }
 
   void addPurchase(String category, double amount, {String note = ''}) {
@@ -55,6 +64,12 @@ class BudgetModel {
     purchases.value = list;
     remaining.value = (remaining.value - amount);
     _recomputeCategories();
+  }
+
+  // called when the user *rejects* a purchase: we add that amount to savings
+  void addRejectedAmount(double amount) {
+    rejectedSavings.value = rejectedSavings.value + amount;
+    savings.value = savings.value + amount;
   }
 
   double _sumPurchases() {
@@ -83,7 +98,6 @@ class BudgetModel {
   }
 
   // Seed the historyPurchases with a few example "past month" purchases.
-  // Safe to call multiple times; it only seeds if empty.
   void seedHistoryIfEmpty() {
     if (historyPurchases.value.isNotEmpty) return;
     final now = DateTime.now();

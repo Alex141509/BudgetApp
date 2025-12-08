@@ -17,7 +17,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Prepopulate if you want a default; leave 0 for first run
   }
 
   @override
@@ -38,13 +37,10 @@ class _HomeScreenState extends State<HomeScreen> {
     _budgetController.clear();
   }
 
-  Widget _buildMiniBarChart(double r, Map<String, double> categories) {
-    // Very simple visual: four bars for yesterday/two earlier/today if categories match.
-    // We'll generate 3 sample bars from the top 3 categories or purchases.
+  Widget _buildMiniBarChart(Map<String, double> categories) {
+    // Build 4 example bars from category totals and purchases:
     final combined = categories.entries.toList();
-    // sort descending
     combined.sort((a, b) => b.value.compareTo(a.value));
-    // pick up to 3 values for display
     final values = <double>[];
     for (var i = 0; i < 3; i++) {
       if (i < combined.length) {
@@ -53,10 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
         values.add(0.0);
       }
     }
-    // add one representing "today" as remaining/10 as a visual (or last purchase if exists)
+    // add one representing "today" as last purchase amount (or zero)
     values.add((budget.purchases.value.isNotEmpty) ? budget.purchases.value.last.amount : 0.0);
 
-    // compute max
     final maxVal = (values.fold(0.0, (s, v) => v > s ? v : s)).clamp(1.0, double.infinity);
 
     return Container(
@@ -65,29 +60,40 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(2, 2))],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          // For each bar: show a vertical bar and a label to the side with '-' prefix
           for (int i = 0; i < values.length; i++)
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Container(
-                    width: 36,
-                    height: (values[i] / maxVal) * 120 + 8,
-                    decoration: BoxDecoration(
-                      color: i == values.length - 1 ? Colors.red[200] : (i == 1 ? Colors.yellow[200] : Colors.green[200]),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    alignment: Alignment.topCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: Text('\$${values[i].toStringAsFixed(0)}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                    ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // left label showing the value (more visible)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 6.0),
+                        child: Text(
+                          values[i] == 0 ? '' : '-\$${values[i].toStringAsFixed(0)}',
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                      ),
+                      // the bar
+                      Expanded(
+                        child: Container(
+                          height: (values[i] / maxVal) * 120 + 8,
+                          decoration: BoxDecoration(
+                            color: i == values.length - 1 ? Colors.red[200] : (i == 1 ? Colors.yellow[200] : Colors.green[200]),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 8),
                   Text(i == values.length - 1 ? 'Today' : (i == 1 ? 'Yesterday' : 'Earlier'), style: const TextStyle(fontSize: 12)),
@@ -123,19 +129,24 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(height: 8),
                             const Text('Savings', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                             const SizedBox(height: 6),
-                            const Text('\$300', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                            ValueListenableBuilder<double>(
+                              valueListenable: b.savings,
+                              builder: (context, s, _) {
+                                return Text('\$${s.toStringAsFixed(0)}', style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold));
+                              },
+                            ),
                             const SizedBox(height: 12),
                             const Text('Balance', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                             const SizedBox(height: 6),
+                            // Balance now shows remaining (so purchases immediately reduce it)
                             ValueListenableBuilder<double>(
-                              valueListenable: b.totalBudget,
-                              builder: (context, tb, _) {
-                                return Text('\$${tb.toStringAsFixed(0)}', style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold));
+                              valueListenable: b.remaining,
+                              builder: (context, rem, _) {
+                                return Text('\$${rem.toStringAsFixed(0)}', style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold));
                               },
                             ),
                             const SizedBox(height: 12),
                             const Text('Spending Summary This Month', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                            // If budget is zero — show input to set budget
                             const SizedBox(height: 8),
                             if (total <= 0)
                               Card(
@@ -167,26 +178,26 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ValueListenableBuilder<Map<String, double>>(
                                     valueListenable: b.categoryTotals,
                                     builder: (context, categories, _) {
-                                      return _buildMiniBarChart(b.remaining.value, categories);
+                                      return _buildMiniBarChart(categories);
                                     },
                                   ),
                                   const SizedBox(height: 8),
                                   ValueListenableBuilder<double>(
-                                    valueListenable: b.remaining,
-                                    builder: (context, rem, _) {
-                                      return Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('Remaining: \$${rem.toStringAsFixed(2)}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                                          const SizedBox(height: 6),
-                                          // low balance warning:
-                                          if (b.isLow)
-                                            Container(
+                                    valueListenable: b.totalBudget,
+                                    builder: (context, tb, _) {
+                                      // show low-balance warning (optional)
+                                      return ValueListenableBuilder<double>(
+                                        valueListenable: b.remaining,
+                                        builder: (context, rem, __) {
+                                          if (b.isLow) {
+                                            return Container(
                                               padding: const EdgeInsets.all(8),
                                               decoration: BoxDecoration(color: Colors.orangeAccent.withOpacity(0.9), borderRadius: BorderRadius.circular(6)),
                                               child: const Text("Warning: if you spend too much you won't have anything left.", style: TextStyle(color: Colors.white)),
-                                            ),
-                                        ],
+                                            );
+                                          }
+                                          return const SizedBox.shrink();
+                                        },
                                       );
                                     },
                                   ),

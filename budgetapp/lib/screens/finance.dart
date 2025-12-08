@@ -45,7 +45,7 @@ class _FinanceScreenState extends State<FinanceScreen> with SingleTickerProvider
             return Card(
               child: ListTile(
                 title: Text(e.key),
-                trailing: Text('\$${e.value.toStringAsFixed(2)}'),
+                trailing: Text('-\$${e.value.toStringAsFixed(2)}', style: const TextStyle(color: Colors.redAccent)),
               ),
             );
           }).toList(),
@@ -74,7 +74,7 @@ class _FinanceScreenState extends State<FinanceScreen> with SingleTickerProvider
               child: ListTile(
                 title: Text(p.category),
                 subtitle: Text(p.note.isNotEmpty ? p.note : _dateFormat.format(p.date)),
-                trailing: Text('\$${p.amount.toStringAsFixed(2)}'),
+                trailing: Text('-\$${p.amount.toStringAsFixed(2)}', style: const TextStyle(color: Colors.redAccent)),
               ),
             );
           },

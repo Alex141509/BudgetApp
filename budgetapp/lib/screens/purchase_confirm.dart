@@ -84,7 +84,9 @@ class PurchaseConfirmScreen extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        // Reject: do NOT deduct. Navigate to the "congrats you saved money" screen
+                        // Reject: do NOT deduct from remaining, but add the amount to savings
+                        budget.addRejectedAmount(amount);
+                        // Navigate to the "congrats you saved money" screen
                         Navigator.pushReplacementNamed(context, '/purchaseRejected');
                       },
                       style: ElevatedButton.styleFrom(
