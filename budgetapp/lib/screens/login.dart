@@ -14,7 +14,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _login() {
     // Accept any email/password — no DB required
-    // Simply navigate to home
     Navigator.pushReplacementNamed(context, '/home');
   }
 
@@ -27,12 +26,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // simple clean UI consistent with your mock
+    // simple clean UI consistent with earlier mock
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // background color / image: use a simple color for now
           Container(color: const Color(0xFFBBDDFF)),
           SafeArea(
             child: Column(
@@ -75,7 +73,21 @@ class _LoginScreenState extends State<LoginScreen> {
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.pushNamed(context, '/forgotPassword'),
+                            child: const Text('Forgot Password', style: TextStyle(decoration: TextDecoration.underline)),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pushNamed(context, '/createUser'),
+                            child: const Text('Create User', style: TextStyle(decoration: TextDecoration.underline)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(

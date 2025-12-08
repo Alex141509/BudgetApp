@@ -5,6 +5,8 @@ import 'screens/addPurchase.dart';
 import 'screens/finance.dart';
 import 'screens/purchase_confirm.dart';
 import 'screens/purchase_rejected.dart';
+import 'screens/create_user.dart';
+import 'screens/forgot_password.dart';
 
 void main() {
   runApp(const BudgetBanditsApp());
@@ -26,6 +28,8 @@ class BudgetBanditsApp extends StatelessWidget {
         '/finance': (context) => const FinanceScreen(),
         '/purchaseConfirm': (context) => const PurchaseConfirmScreen(),
         '/purchaseRejected': (context) => const PurchaseRejectedScreen(),
+        '/createUser': (context) => const CreateUserScreen(),
+        '/forgotPassword': (context) => const ForgotPasswordScreen(),
       },
       theme: ThemeData(
         primaryColor: const Color(0xFF2B7CEB),

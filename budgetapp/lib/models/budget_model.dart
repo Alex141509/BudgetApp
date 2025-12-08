@@ -4,11 +4,13 @@ class Purchase {
   final String category;
   final double amount;
   final DateTime date;
+  final String note;
 
   Purchase({
     required this.category,
     required this.amount,
     DateTime? date,
+    this.note = '',
   }) : date = date ?? DateTime.now();
 }
 
@@ -23,8 +25,11 @@ class BudgetModel {
   // remaining money left from the budget after purchases
   final ValueNotifier<double> remaining = ValueNotifier<double>(0.0);
 
-  // list of purchases
+  // list of purchases (current month)
   final ValueNotifier<List<Purchase>> purchases = ValueNotifier<List<Purchase>>([]);
+
+  // history list for past-month purchases (pre-populated)
+  final ValueNotifier<List<Purchase>> historyPurchases = ValueNotifier<List<Purchase>>([]);
 
   // categories -> totals (computed on demand or via recompute)
   final ValueNotifier<Map<String, double>> categoryTotals =
@@ -43,8 +48,8 @@ class BudgetModel {
     categoryTotals.value = {};
   }
 
-  void addPurchase(String category, double amount) {
-    final p = Purchase(category: category, amount: amount);
+  void addPurchase(String category, double amount, {String note = ''}) {
+    final p = Purchase(category: category, amount: amount, note: note);
     final list = List<Purchase>.from(purchases.value);
     list.add(p);
     purchases.value = list;
@@ -77,7 +82,18 @@ class BudgetModel {
     return (spent / totalBudget.value).clamp(0.0, 1.0);
   }
 
-
-
+  // Seed the historyPurchases with a few example "past month" purchases.
+  // Safe to call multiple times; it only seeds if empty.
+  void seedHistoryIfEmpty() {
+    if (historyPurchases.value.isNotEmpty) return;
+    final now = DateTime.now();
+    final lastMonth = now.subtract(const Duration(days: 28));
+    historyPurchases.value = [
+      Purchase(category: 'Food', amount: 45.50, date: lastMonth.subtract(const Duration(days: 2)), note: 'Lunch & coffee'),
+      Purchase(category: 'Gas', amount: 32.00, date: lastMonth.subtract(const Duration(days: 6)), note: 'Fill-up'),
+      Purchase(category: 'Entertainment', amount: 20.00, date: lastMonth.subtract(const Duration(days: 12)), note: 'Movies'),
+      Purchase(category: 'Groceries', amount: 78.20, date: lastMonth.subtract(const Duration(days: 18)), note: 'Weekly groceries'),
+      Purchase(category: 'Subscription', amount: 12.99, date: lastMonth.subtract(const Duration(days: 22)), note: 'Streaming'),
+    ];
+  }
 }
-
