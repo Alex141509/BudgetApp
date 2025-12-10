@@ -38,7 +38,7 @@ class _PurchaseRejectedScreenState extends State<PurchaseRejectedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFDFFFD8), // green-ish
+      backgroundColor: const Color(0xFFDFFFD8), 
       appBar: AppBar(
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,

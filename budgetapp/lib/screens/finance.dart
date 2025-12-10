@@ -1,3 +1,4 @@
+// lib/screens/finance.dart
 import 'package:flutter/material.dart';
 import '../models/budget_model.dart';
 import 'package:intl/intl.dart';
@@ -14,11 +15,15 @@ class _FinanceScreenState extends State<FinanceScreen> with SingleTickerProvider
   late final TabController _tabController;
   final DateFormat _dateFormat = DateFormat.yMMMd();
 
+  // Colors to match the app look
+  final Color appBg = const Color(0xFFB8D1FF);
+  final Color categoriesCard = const Color(0xFFFFF7D6); // pale yellow
+  final Color historyCard = const Color(0xFFFFE6E6); // pale red/pink
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    // seed example history if none exists
     budget.seedHistoryIfEmpty();
   }
 
@@ -33,19 +38,25 @@ class _FinanceScreenState extends State<FinanceScreen> with SingleTickerProvider
       valueListenable: budget.categoryTotals,
       builder: (context, categories, _) {
         if (categories.isEmpty) {
-          return const Padding(
-            padding: EdgeInsets.all(24.0),
-            child: Text('No purchases yet', style: TextStyle(fontSize: 16)),
+          return Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Text('No purchases yet', style: TextStyle(fontSize: 16, color: Colors.grey[800])),
           );
         }
         final entries = categories.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
         return ListView(
           padding: const EdgeInsets.all(12),
           children: entries.map((e) {
-            return Card(
+            return Container(
+              margin: const EdgeInsets.symmetric(vertical: 6),
+              decoration: BoxDecoration(
+                color: categoriesCard,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 2, offset: Offset(1,1))],
+              ),
               child: ListTile(
-                title: Text(e.key),
-                trailing: Text('-\$${e.value.toStringAsFixed(2)}', style: const TextStyle(color: Colors.redAccent)),
+                title: Text(e.key, style: const TextStyle(fontWeight: FontWeight.w600)),
+                trailing: Text('-\$${e.value.toStringAsFixed(2)}', style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
               ),
             );
           }).toList(),
@@ -59,9 +70,9 @@ class _FinanceScreenState extends State<FinanceScreen> with SingleTickerProvider
       valueListenable: budget.historyPurchases,
       builder: (context, history, _) {
         if (history.isEmpty) {
-          return const Padding(
-            padding: EdgeInsets.all(24.0),
-            child: Text('No history available', style: TextStyle(fontSize: 16)),
+          return Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Text('No history available', style: TextStyle(fontSize: 16, color: Colors.grey[800])),
           );
         }
         final sorted = List<Purchase>.from(history)..sort((a, b) => b.date.compareTo(a.date));
@@ -70,11 +81,17 @@ class _FinanceScreenState extends State<FinanceScreen> with SingleTickerProvider
           itemCount: sorted.length,
           itemBuilder: (context, index) {
             final p = sorted[index];
-            return Card(
+            return Container(
+              margin: const EdgeInsets.symmetric(vertical: 6),
+              decoration: BoxDecoration(
+                color: historyCard,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 2, offset: Offset(1,1))],
+              ),
               child: ListTile(
-                title: Text(p.category),
+                title: Text(p.category, style: const TextStyle(fontWeight: FontWeight.w600)),
                 subtitle: Text(p.note.isNotEmpty ? p.note : _dateFormat.format(p.date)),
-                trailing: Text('-\$${p.amount.toStringAsFixed(2)}', style: const TextStyle(color: Colors.redAccent)),
+                trailing: Text('-\$${p.amount.toStringAsFixed(2)}', style: const TextStyle(color: Color.fromARGB(255, 198, 40, 40), fontWeight: FontWeight.bold)),
               ),
             );
           },
@@ -86,6 +103,7 @@ class _FinanceScreenState extends State<FinanceScreen> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: appBg, // match app background
       appBar: AppBar(
         title: const Text('Finances'),
         backgroundColor: Colors.white,
@@ -94,6 +112,7 @@ class _FinanceScreenState extends State<FinanceScreen> with SingleTickerProvider
         bottom: TabBar(
           controller: _tabController,
           labelColor: Colors.black87,
+          indicatorColor: Colors.blueAccent,
           tabs: const [
             Tab(text: 'Categories'),
             Tab(text: 'History'),

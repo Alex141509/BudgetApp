@@ -15,7 +15,7 @@ class Purchase {
 }
 
 class BudgetModel {
-  // singleton
+  
   BudgetModel._internal();
   static final BudgetModel instance = BudgetModel._internal();
 
