@@ -13,7 +13,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscure = true;
 
   void _login() {
-    // Accept any email/password — no DB required
     Navigator.pushReplacementNamed(context, '/home');
   }
 
@@ -26,7 +25,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // simple clean UI consistent with earlier mock
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,

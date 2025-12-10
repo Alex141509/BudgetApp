@@ -13,7 +13,7 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
   final BudgetModel budget = BudgetModel.instance;
   final TextEditingController _amountController = TextEditingController();
   String _selectedCategory = 'Other';
-  final List<String> _categories = ['Food', 'Gas', 'Rent', 'Entertainment', 'Savings', 'Other'];
+  final List<String> _categories = ['Food', 'Gas', 'Rent', 'Entertainment', 'Savings', 'Travel', 'Games', 'Legos'];
 
   @override
   void dispose() {
@@ -29,8 +29,6 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
       return;
     }
 
-    // Navigate to the full-screen confirmation (Option C)
-    // Pass amount and category as arguments
     Navigator.pushNamed(
       context,
       '/purchaseConfirm',

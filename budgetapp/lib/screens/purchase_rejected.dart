@@ -1,4 +1,4 @@
-// lib/screens/purchase_rejected.dart
+
 import 'dart:async';
 
 import 'package:confetti/confetti.dart';

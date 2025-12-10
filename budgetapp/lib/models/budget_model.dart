@@ -38,7 +38,7 @@ class BudgetModel {
   // savings shown on Home (start at 0 now)
   final ValueNotifier<double> savings = ValueNotifier<double>(0.0);
 
-  // total amount user "rejected" (we'll add rejected amounts into savings)
+  // total amount user "rejected" 
   final ValueNotifier<double> rejectedSavings = ValueNotifier<double>(0.0);
 
   void setBudget(double amount) {
@@ -66,7 +66,7 @@ class BudgetModel {
     _recomputeCategories();
   }
 
-  // called when the user *rejects* a purchase: we add that amount to savings
+  
   void addRejectedAmount(double amount) {
     rejectedSavings.value = rejectedSavings.value + amount;
     savings.value = savings.value + amount;
@@ -84,7 +84,7 @@ class BudgetModel {
     categoryTotals.value = map;
   }
 
-  // convenience helper: low balance threshold (20% of total)
+
   bool get isLow {
     if (totalBudget.value <= 0) return false;
     return remaining.value <= (0.2 * totalBudget.value);
@@ -97,7 +97,7 @@ class BudgetModel {
     return (spent / totalBudget.value).clamp(0.0, 1.0);
   }
 
-  // Seed the historyPurchases with a few example "past month" purchases.
+
   void seedHistoryIfEmpty() {
     if (historyPurchases.value.isNotEmpty) return;
     final now = DateTime.now();
@@ -107,7 +107,8 @@ class BudgetModel {
       Purchase(category: 'Gas', amount: 32.00, date: lastMonth.subtract(const Duration(days: 6)), note: 'Fill-up'),
       Purchase(category: 'Entertainment', amount: 20.00, date: lastMonth.subtract(const Duration(days: 12)), note: 'Movies'),
       Purchase(category: 'Groceries', amount: 78.20, date: lastMonth.subtract(const Duration(days: 18)), note: 'Weekly groceries'),
-      Purchase(category: 'Subscription', amount: 12.99, date: lastMonth.subtract(const Duration(days: 22)), note: 'Streaming'),
+      Purchase(category: 'Subscription', amount: 12.99, date: lastMonth.subtract(const Duration(days: 22)), note: 'Streaming'), 
+      Purchase(category: 'Travel', amount: 1000, date: lastMonth.subtract(const Duration(days: 22)), note: 'Travel'),
     ];
   }
 }

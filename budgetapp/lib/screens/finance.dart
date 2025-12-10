@@ -15,7 +15,6 @@ class _FinanceScreenState extends State<FinanceScreen> with SingleTickerProvider
   late final TabController _tabController;
   final DateFormat _dateFormat = DateFormat.yMMMd();
 
-  // Colors to match the app look
   final Color appBg = const Color(0xFFB8D1FF);
   final Color categoriesCard = const Color(0xFFFFF7D6); // pale yellow
   final Color historyCard = const Color(0xFFFFE6E6); // pale red/pink
@@ -103,7 +102,7 @@ class _FinanceScreenState extends State<FinanceScreen> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appBg, // match app background
+      backgroundColor: appBg, 
       appBar: AppBar(
         title: const Text('Finances'),
         backgroundColor: Colors.white,

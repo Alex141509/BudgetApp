@@ -66,7 +66,6 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // For each bar: show a vertical bar and a label to the side with '-' prefix
           for (int i = 0; i < values.length; i++)
             Expanded(
               child: Column(
@@ -75,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // left label showing the value (more visible)
+                    
                       Padding(
                         padding: const EdgeInsets.only(right: 6.0),
                         child: Text(
@@ -112,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Container(color: const Color(0xFFB8D1FF)), // background
+          Container(color: const Color(0xFFB8D1FF)),
           SafeArea(
             child: Column(
               children: [

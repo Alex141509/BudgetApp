@@ -12,11 +12,11 @@ class PurchaseConfirmScreen extends StatelessWidget {
     final double amount = (args['amount'] as double?) ?? 0.0;
     final BudgetModel budget = BudgetModel.instance;
 
-    // compute new balance if purchase were added (we do NOT yet commit)
+    
     final double currentRemaining = budget.remaining.value;
     final double newBalance = currentRemaining - amount;
 
-    // Low threshold — you can change this (20% rule kept consistent)
+
     final bool willBeLow = (budget.totalBudget.value > 0) && (newBalance <= (0.2 * budget.totalBudget.value));
 
     return Scaffold(
